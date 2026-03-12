@@ -62,6 +62,7 @@ def cleanup_archive():
 
 async def process_file(filename: str):
     from routers.import_mapping import import_file
+    from scheduler import task_score_customers_batch
 
     path = os.path.join(INPUT_DIR, filename)
 
@@ -81,6 +82,15 @@ async def process_file(filename: str):
 
         mock_file = UploadFile(filename=filename, file=io.BytesIO(content))
         result    = await import_file(mapping_name=mapping_name, target_table=target_table, file=mock_file)
+
+        # --- batch score trigger ---
+        customer_ids = result.get("affected_customer_ids", [])
+        if customer_ids:
+            trigger = "payment_event" if target_table == "payments" else "invoice_event"
+            task_score_customers_batch.delay(customer_ids, trigger=trigger)
+            logger.info(f"Queued score recompute for {len(customer_ids)} customers")
+        else:
+            logger.warning(f"No affected_customer_ids returned from import — scores not triggered")
 
         timestamp    = datetime.now().strftime("%Y%m%d_%H%M%S")
         archive_name = f"{timestamp}_{filename}"
