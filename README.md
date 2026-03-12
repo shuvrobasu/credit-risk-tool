@@ -130,6 +130,7 @@ This script:
 - Creates Python virtual environment and installs all packages
 - Runs `npm install` for the frontend
 - Initialises Alembic and runs all migrations
+- Installs llama.cpp if not present (DO NOT USE LLAMA-CPP-PYTHON)
 - Seeds the database with realistic fake data via `seed_data.py`
 - Verifies PostgreSQL and Memurai service status
 
@@ -303,6 +304,8 @@ Score recomputed and snapshot inserted on: `invoice_event` · `payment_event` ·
 | 6 | +15d | post_due | 0.25 |
 | 7 | +30d | escalation | 0.15 |
 | 8 | +45d | collections | 0.10 |
+
+### You can create your own !!!
 
 Penalty weights per config must sum to `1.0` (validated on save).
 
