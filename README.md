@@ -72,6 +72,23 @@ CreditTool ingests accounts receivable and payment data at the **invoice level**
 - **Template designer** — rich text editor with token toolbar and live preview
 - **Dunning log** — full timeline per customer with delivery status and DPD at send
 - **Celery-scheduled evaluation** — nightly DPD drift check triggers dunning steps automatically
+- **IMPORTANT #1 ** — **DISPUTED** invoices if paid in full will **CLOSE** the invoice
+- **IMPORTANT #2 ** — NO NEED FOR FULL OPEN AR DATA, ONLY DELTA
+  - Just the delta — open transactions only, not full AR dump.
+      -- Specifically what you need daily from ERP:
+      
+      -- New invoices raised since last sync
+      -- Payments posted since last sync
+      -- Status changes — invoices that moved to paid/written_off/in_collections
+      -- Credit limit changes if any
+      
+      -- You do NOT need:
+      
+      -- Already-paid historical invoices (already in your DB)
+      -- Full customer master every day (only on change)
+      -- Full AR ledger dump (wasteful, slow, causes duplicate risk)
+      <BR>
+- **IMPORTANT #3 ** — The inbuilt
 
 ### Dashboard
 - Portfolio heat map (risk band distribution)
@@ -293,7 +310,14 @@ Scores run **0–1000** (higher = better). Three output layers:
 
 ### Score Triggers
 
-Score recomputed and snapshot inserted on: `invoice_event` · `payment_event` · `collections_event` · `credit_limit_change` · `dnb_update` · `scheduled_nightly` · `manual`
+Score recomputed and snapshot inserted on: <br>
+· `invoice_event` <br>
+· `payment_event` <br>
+· `collections_event` <br>
+· `credit_limit_change` <br>
+· `dnb_update` <br>
+· `scheduled_nightly` <br> 
+· `manual` <br>
 
 ---
 
