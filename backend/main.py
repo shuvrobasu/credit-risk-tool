@@ -22,59 +22,13 @@ ERP_ENABLED = os.getenv("ENABLE_ERP_INTEGRATION", "false").lower() == "true"
 async def lifespan(app: FastAPI):
     print(f"Credit Tool API starting - ENV={os.getenv('APP_ENV')}")
     print(f"ERP Integration: {'ENABLED' if ERP_ENABLED else 'DISABLED'}")
-    
-    # Start auto-import service
+
     try:
         from services.auto_import import run_service_background
         run_service_background()
         print("Auto-Import Service: STARTED")
     except Exception as e:
         print(f"Auto-Import Service: FAILED TO START: {e}")
-        
-    # --- Dynamic Schema Sync (M9/M10 Extensions) ---
-    try:
-        with engine.connect() as conn:
-            # Customer table extensions
-            conn.execute(text("ALTER TABLE customers ADD COLUMN IF NOT EXISTS exclude_from_dunning BOOLEAN DEFAULT FALSE;"))
-            conn.execute(text("ALTER TABLE customers ADD COLUMN IF NOT EXISTS dunning_mode VARCHAR(20) DEFAULT 'fixed';"))
-            # Scoring Config extensions
-            conn.execute(text("ALTER TABLE scoring_config ADD COLUMN IF NOT EXISTS dunning_mode VARCHAR(20) DEFAULT 'fixed';"))
-            
-            # Invoice table extensions (M11/M12 Custom Reporting)
-            conn.execute(text("ALTER TABLE invoices ADD COLUMN IF NOT EXISTS promise_to_pay_date DATE;"))
-            conn.execute(text("ALTER TABLE invoices ADD COLUMN IF NOT EXISTS dispute_category VARCHAR(50);"))
-            conn.execute(text("ALTER TABLE invoices ADD COLUMN IF NOT EXISTS dispute_opened_at TIMESTAMP;"))
-
-            # Normalize Credit Limits to nearest 1000 (M13 requirement)
-            conn.execute(text("UPDATE customers SET credit_limit = ROUND(CAST(credit_limit AS FLOAT) / 1000) * 1000;"))
-
-            # Create NEW tables if they don't exist (Manual migration for SQLite/PG fallback)
-            conn.execute(text("""
-                CREATE TABLE IF NOT EXISTS dunning_worklist (
-                    work_id UUID PRIMARY KEY,
-                    customer_id UUID NOT NULL,
-                    invoice_id UUID NOT NULL,
-                    suggested_action VARCHAR(50),
-                    suggested_tone VARCHAR(50),
-                    priority VARCHAR(20),
-                    reason TEXT,
-                    status VARCHAR(20) DEFAULT 'pending',
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                );
-            """))
-            conn.execute(text("""
-                CREATE TABLE IF NOT EXISTS system_health (
-                    key VARCHAR(100) PRIMARY KEY,
-                    value VARCHAR(255),
-                    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    status VARCHAR(20)
-                );
-            """))
-            
-            conn.commit()
-            print("Database Schema: SYNCED (exclude_from_dunning, dunning_mode, worklist, health)")
-    except Exception as e:
-        print(f"Database Schema Sync: WARNING - {e}")
 
     yield
 
