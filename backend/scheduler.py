@@ -123,3 +123,23 @@ def task_dpd_drift_check(self):
         raise self.retry(exc=e, countdown=300)
     finally:
         db.close()
+@celery.task(name="scheduler.task_score_customers_batch", bind=True, max_retries=3)
+def task_score_customers_batch(self, customer_ids: list, trigger: str = "invoice_event"):
+    db = SessionLocal()
+    try:
+        success = 0
+        errors  = 0
+        for cid in customer_ids:
+            try:
+                compute_and_save(db, cid, trigger=trigger)
+                success += 1
+            except Exception as e:
+                errors += 1
+                logger.error(f"Batch score failed cust={cid}: {e}")
+        logger.info(f"Batch score complete: {success} ok, {errors} errors, trigger={trigger}")
+        return {"success": success, "errors": errors}
+    except Exception as e:
+        logger.error(f"Batch score task failed: {e}")
+        raise self.retry(exc=e, countdown=300)
+    finally:
+        db.close()
