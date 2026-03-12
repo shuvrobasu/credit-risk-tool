@@ -88,8 +88,8 @@ CreditTool ingests accounts receivable and payment data at the **invoice level**
 
 | Dashboard | Customer Detail |
 |---|---|
-| ![Dashboard]<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/83e634be-1b59-4b06-8841-42d3ac0630d0" />
- | ![Customer Detail] | <img width="1918" height="1004" alt="image" src="https://github.com/user-attachments/assets/d8edd3c0-2d9e-4f1d-8336-e22f4a558d6c" />
+| !<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/83e634be-1b59-4b06-8841-42d3ac0630d0" />
+ | !<img width="1918" height="1004" alt="image" src="https://github.com/user-attachments/assets/d8edd3c0-2d9e-4f1d-8336-e22f4a558d6c" />
  |
 
 | Scoring Config | Template Designer |
