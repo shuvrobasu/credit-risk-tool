@@ -2,7 +2,7 @@
 
 > Self-hosted, API-first credit risk and AR management platform with dynamic scoring, dunning automation, and AI-assisted analysis.
 
-![Dashboard Screenshot]<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/a78d028c-c887-42a2-b851-4ed59d28742c" />
+!<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/a78d028c-c887-42a2-b851-4ed59d28742c" />
 
 
 ---
