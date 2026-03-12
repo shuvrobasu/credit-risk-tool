@@ -2,7 +2,7 @@
 
 > Self-hosted, API-first credit risk and AR management platform with dynamic scoring, dunning automation, and AI-assisted analysis.
 
-![Dashboard Screenshot](docs/images/dashboard.png)<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/a78d028c-c887-42a2-b851-4ed59d28742c" />
+![Dashboard Screenshot]<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/a78d028c-c887-42a2-b851-4ed59d28742c" />
 
 
 ---
@@ -88,20 +88,20 @@ CreditTool ingests accounts receivable and payment data at the **invoice level**
 
 | Dashboard | Customer Detail |
 |---|---|
-| ![Dashboard](docs/images/dashboard.png)<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/83e634be-1b59-4b06-8841-42d3ac0630d0" />
- | ![Customer Detail](docs/images/customer_detail.png)<img width="1918" height="1004" alt="image" src="https://github.com/user-attachments/assets/d8edd3c0-2d9e-4f1d-8336-e22f4a558d6c" />
+| ![Dashboard]<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/83e634be-1b59-4b06-8841-42d3ac0630d0" />
+ | ![Customer Detail]<img width="1918" height="1004" alt="image" src="https://github.com/user-attachments/assets/d8edd3c0-2d9e-4f1d-8336-e22f4a558d6c" />
  |
 
 | Scoring Config | Template Designer |
 |---|---|
-| ![Scoring Config](docs/images/scoring_config.png)<img width="1917" height="1003" alt="image" src="https://github.com/user-attachments/assets/08918402-04c4-43d4-bf69-842b2ff413b2" />
- | ![Template Designer](docs/images/template_designer.png)<img width="1918" height="1001" alt="image" src="https://github.com/user-attachments/assets/3452200d-331e-4f24-ad3d-c1f6802b659c" />
+| ![Scoring Config]<img width="1917" height="1003" alt="image" src="https://github.com/user-attachments/assets/08918402-04c4-43d4-bf69-842b2ff413b2" />
+ | ![Template Designer<img width="1918" height="1001" alt="image" src="https://github.com/user-attachments/assets/3452200d-331e-4f24-ad3d-c1f6802b659c" />
  |
 
 | Ladder Editor | AR Ledger |
 |---|---|
-| ![Ladder Editor](docs/images/ladder_editor.png)<img width="1913" height="994" alt="image" src="https://github.com/user-attachments/assets/4c010d4a-a7ff-41c8-9151-217f53fbfcb5" />
- | ![AR Ledger](docs/images/ar_ledger.png)<img width="1912" height="1001" alt="image" src="https://github.com/user-attachments/assets/c7f56fe3-3067-4ba5-b79a-4663388b02da" />
+| ![Ladder Editor]<img width="1913" height="994" alt="image" src="https://github.com/user-attachments/assets/4c010d4a-a7ff-41c8-9151-217f53fbfcb5" />
+ | ![AR Ledger]<img width="1912" height="1001" alt="image" src="https://github.com/user-attachments/assets/c7f56fe3-3067-4ba5-b79a-4663388b02da" />
  |
 
 ---
