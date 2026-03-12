@@ -111,6 +111,10 @@ CreditTool ingests accounts receivable and payment data at the **invoice level**
 | PostgreSQL | 16 |
 | Memurai | Developer Edition |
 | Windows | 11 |
+| Llama.cpp | Latest |
+| Nvidia GPU Drivers | >12.8 |
+
+[Note]=Tested with Nvidia 12.8 drivers on RTX 5080
 
 ---
 
