@@ -1,0 +1,12 @@
+# Avoid uploading massive dependency folders
+node_modules/
+.venv/
+__pycache__/
+dist/
+.git/
+.env
+*.db
+*.sqlite3
+.DS_Store
+frontend/node_modules/
+backend/__pycache__/

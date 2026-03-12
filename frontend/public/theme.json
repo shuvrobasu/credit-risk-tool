@@ -1,0 +1,23 @@
+{
+  "appName": "CreditTool",
+  "tagline": "Credit Risk & AR Management",
+  "logoUrl": "",
+  "primaryColor": "#2563eb",
+  "primaryHover": "#1d4ed8",
+  "accentColor": "#3b82f6",
+  "sidebarBg": "#0f172a",
+  "sidebarText": "#94a3b8",
+  "sidebarActiveText": "#ffffff",
+  "sidebarActiveBg": "#1e293b",
+  "headerBg": "#ffffff",
+  "bodyBg": "#f8fafc",
+  "cardBg": "#ffffff",
+  "cardBorder": "#e2e8f0",
+  "textPrimary": "#1e293b",
+  "textSecondary": "#64748b",
+  "fontFamily": "Inter, system-ui, sans-serif",
+  "borderRadius": "0.75rem",
+  "greenBand": "#16a34a",
+  "amberBand": "#d97706",
+  "redBand": "#dc2626"
+}

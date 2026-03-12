@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap');
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast-animate {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base, 14px);
+  background-color: var(--body-bg, #f8fafc);
+  color: var(--text-primary, #0f172a);
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Mapping Designer Styles */
+.mapping-canvas {
+  position: relative;
+  background-color: #fcfcfd;
+  border-radius: var(--radius, 0.5rem);
+  border: 1px solid #f1f5f9;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.mapping-panel {
+  width: 220px;
+  z-index: 10;
+}
+
+.field-node {
+  @apply flex items-center justify-between p-2 mb-2 bg-white border border-slate-200 rounded-lg text-sm shadow-sm transition-all hover:border-blue-300;
+}
+
+.field-node.connected {
+  @apply border-blue-100 bg-blue-50/30;
+}
+
+.field-node.active {
+  @apply ring-2 ring-blue-500 border-blue-500 shadow-md;
+}
+
+.port-dot {
+  @apply w-3 h-3 rounded-full border-2 border-white shadow-sm cursor-pointer transition-all hover:scale-125;
+}
+
+.port-dot.source {
+  @apply bg-slate-300 -mr-1.5;
+}
+
+.port-dot.source.connected {
+  @apply bg-blue-500;
+}
+
+.port-dot.target {
+  @apply bg-slate-300 -ml-1.5;
+}
+
+.port-dot.target.connected {
+  @apply bg-blue-500;
+}
+
+.port-dot.active {
+  @apply bg-blue-600 ring-4 ring-blue-100;
+}
+
+.connector-line {
+  stroke: #94a3b8;
+  stroke-width: 2;
+  fill: none;
+  transition: stroke 0.2s;
+}
+
+.connector-line.active {
+  stroke: #3b82f6;
+  stroke-width: 3;
+}
+
+.connection-popover {
+  @apply absolute z-50 bg-white border border-slate-200 rounded-xl shadow-xl p-4 w-64;
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* 3D Button Global Overrides */
+button, 
+.btn, 
+[role="button"] {
+  border-radius: 0px !important;
+  transition: all 0.1s ease-in-out !important;
+  position: relative !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 800 !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+/* Primary 3D Lift */
+button:not(:disabled), 
+.btn:not(.btn-flat) {
+  box-shadow: 0 4px 0 0 rgba(0,0,0,0.2), 0 8px 15px rgba(0,0,0,0.1) !important;
+  transform: translateY(-2px);
+}
+
+/* Button Pressed State */
+button:not(:disabled):active, 
+.btn:not(.btn-flat):active {
+  box-shadow: 0 1px 0 0 rgba(0,0,0,0.2) !important;
+  transform: translateY(2px) !important;
+}
+
+/* Hover State */
+button:not(:disabled):hover {
+  filter: brightness(1.05);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 0 0 rgba(0,0,0,0.2), 0 12px 20px rgba(0,0,0,0.15) !important;
+}
+
+/* Specific color depth logic */
+button.bg-blue-600 { background-color: #2563eb !important; border-bottom: 4px solid #1e40af !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3) !important; }
+button.bg-blue-600:active { border-bottom-width: 0 !important; transform: translateY(4px) !important; }
+
+button.bg-emerald-600 { background-color: #059669 !important; border-bottom: 4px solid #065f46 !important; }
+button.bg-emerald-600:active { border-bottom-width: 0 !important; transform: translateY(4px) !important; }
+
+button.bg-rose-600 { background-color: #e11d48 !important; border-bottom: 4px solid #9f1239 !important; }
+button.bg-rose-600:active { border-bottom-width: 0 !important; transform: translateY(4px) !important; }
+
+/* Ensure all containers with border-radius variables are also flattened if they contain buttons */
+:root {
+  --radius: 0px !important;
+}

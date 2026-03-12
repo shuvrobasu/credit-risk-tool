@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./backend:/app/backend
+      - sqlite_data:/app/backend/data
+    environment:
+      - DATABASE_URL=sqlite:///./backend/data/credit_tool.db
+
+volumes:
+  sqlite_data:
