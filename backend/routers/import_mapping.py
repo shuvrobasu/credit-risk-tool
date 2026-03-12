@@ -414,14 +414,12 @@ async def import_file(
     file:          UploadFile = File(...),
     db:            Session = Depends(get_db),
 ):
-    """Parse a CSV/Excel file using the saved mapping profile and insert rows into the target table."""
     from models.tables import Customer, Invoice, Payment
     from datetime import datetime as dt
     import uuid as uuid_mod
 
-    # --- Free tier limits ---
     MAX_CUSTOMERS = 1000
-    MAX_INVOICES = 100000
+    MAX_INVOICES  = 100000
 
     mappings = db.query(ImportFieldMapping).filter(
         ImportFieldMapping.mapping_name == mapping_name,
@@ -431,45 +429,42 @@ async def import_file(
     if not mappings:
         raise HTTPException(status_code=404, detail="Mapping profile not found")
 
-    content = await file.read()
+    content  = await file.read()
     filename = file.filename or ""
     rows, headers = _parse_file(content, filename)
 
     if not rows:
         raise HTTPException(status_code=400, detail="File is empty or has no data rows")
 
-    # Build mapping lookup: source_field -> (target_field, transform_rule, is_required, default_value)
     field_map = {}
     for m in mappings:
         field_map[m.source_field] = {
-            "target": m.target_field,
+            "target":    m.target_field,
             "transform": m.transform_rule,
-            "required": m.is_required,
-            "default": m.default_value,
+            "required":  m.is_required,
+            "default":   m.default_value,
         }
 
-    success_count = 0
-    error_count = 0
-    row_errors = []
+    success_count         = 0
+    error_count           = 0
+    row_errors            = []
+    affected_customer_ids = set()
 
     for row_idx, raw_row in enumerate(rows, start=1):
-        mapped_row = {}
+        mapped_row    = {}
         row_has_error = False
 
         for source_field, cfg in field_map.items():
             raw_val = raw_row.get(source_field)
 
-            # apply default if empty
             if (raw_val is None or str(raw_val).strip() == "") and cfg["default"]:
                 raw_val = cfg["default"]
 
-            # check required
             if cfg["required"] and (raw_val is None or str(raw_val).strip() == ""):
                 row_errors.append(f"Row {row_idx}: required field '{source_field}' is empty")
                 row_has_error = True
                 continue
 
-            # apply transform
             try:
                 transformed = _apply_transform(raw_val, cfg["transform"])
             except Exception as e:
@@ -483,7 +478,6 @@ async def import_file(
             error_count += 1
             continue
 
-        # --- Insert into DB ---
         try:
             if target_table == "customers":
                 current_count = db.query(Customer).count()
@@ -496,16 +490,15 @@ async def import_file(
                     Customer.customer_code == mapped_row.get("customer_code")
                 ).first()
                 if existing:
-                    # update existing
                     for k, v in mapped_row.items():
                         if k != "customer_code" and v is not None:
                             setattr(existing, k, v)
+                    affected_customer_ids.add(str(existing.customer_id))
                 else:
-                    obj = Customer(
-                        customer_id=str(uuid_mod.uuid4()),
-                        **mapped_row
-                    )
+                    new_id = str(uuid_mod.uuid4())
+                    obj    = Customer(customer_id=new_id, **mapped_row)
                     db.add(obj)
+                    affected_customer_ids.add(new_id)
 
             elif target_table == "invoices":
                 current_count = db.query(Invoice).count()
@@ -514,7 +507,6 @@ async def import_file(
                         status_code=402,
                         detail=f"Free tier limit reached: {MAX_INVOICES} invoices. Upgrade to import more."
                     )
-                # resolve customer_code -> customer_id
                 cust_code = mapped_row.pop("customer_code", None)
                 if cust_code:
                     cid = _resolve_customer_id(db, cust_code)
@@ -523,6 +515,7 @@ async def import_file(
                         error_count += 1
                         continue
                     mapped_row["customer_id"] = cid
+                    affected_customer_ids.add(cid)
 
                 existing = db.query(Invoice).filter(
                     Invoice.invoice_number == mapped_row.get("invoice_number")
@@ -532,14 +525,10 @@ async def import_file(
                         if k != "invoice_number" and v is not None:
                             setattr(existing, k, v)
                 else:
-                    obj = Invoice(
-                        invoice_id=str(uuid_mod.uuid4()),
-                        **mapped_row
-                    )
+                    obj = Invoice(invoice_id=str(uuid_mod.uuid4()), **mapped_row)
                     db.add(obj)
 
             elif target_table == "payments":
-                # resolve invoice_number -> invoice_id
                 inv_num = mapped_row.pop("invoice_number", None)
                 if inv_num:
                     iid = _resolve_invoice_id(db, inv_num)
@@ -549,7 +538,6 @@ async def import_file(
                         continue
                     mapped_row["invoice_id"] = iid
 
-                # resolve customer_code -> customer_id
                 cust_code = mapped_row.pop("customer_code", None)
                 if cust_code:
                     cid = _resolve_customer_id(db, cust_code)
@@ -558,11 +546,9 @@ async def import_file(
                         error_count += 1
                         continue
                     mapped_row["customer_id"] = cid
+                    affected_customer_ids.add(cid)
 
-                obj = Payment(
-                    payment_id=str(uuid_mod.uuid4()),
-                    **mapped_row
-                )
+                obj = Payment(payment_id=str(uuid_mod.uuid4()), **mapped_row)
                 db.add(obj)
 
             success_count += 1
@@ -576,11 +562,8 @@ async def import_file(
     # --- AR Reconciliation (Missing = Paid) ---
     reconciled_count = 0
     if target_table == "invoices" and success_count > 0:
-        # Get all invoices currently 'open' or 'partial'
-        # We assume if they're not in the file, they're paid
         new_invoice_numbers = set()
         for row in rows:
-            # We need to find the invoice_number in the raw row via the mapping
             inv_num_src = next((m.source_field for m in mappings if m.target_field == "invoice_number"), None)
             if inv_num_src and raw_row.get(inv_num_src):
                 new_invoice_numbers.add(str(raw_row.get(inv_num_src)))
@@ -592,52 +575,50 @@ async def import_file(
             ).all()
 
             for inv in missing_invoices:
-                # Mark as paid
-                inv.status = "paid"
+                inv.status             = "paid"
                 inv.outstanding_amount = 0
-                inv.updated_at = dt.utcnow()
-                
-                # Create a payment record for reconciliation
+                inv.updated_at         = dt.utcnow()
                 pay = Payment(
-                    payment_id=str(uuid_mod.uuid4()),
-                    invoice_id=inv.invoice_id,
-                    customer_id=inv.customer_id,
-                    payment_date=dt.utcnow().date(),
-                    payment_amount=inv.outstanding_amount, # record remaining as paid
-                    payment_method="auto_reconciliation",
-                    reference_number=f"RECON-{filename}"
+                    payment_id      = str(uuid_mod.uuid4()),
+                    invoice_id      = inv.invoice_id,
+                    customer_id     = inv.customer_id,
+                    payment_date    = dt.utcnow().date(),
+                    payment_amount  = inv.outstanding_amount,
+                    payment_method  = "auto_reconciliation",
+                    reference_number= f"RECON-{filename}"
                 )
                 db.add(pay)
+                affected_customer_ids.add(str(inv.customer_id))
                 reconciled_count += 1
 
-    # commit all successful rows
     try:
         db.commit()
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database commit failed: {e}")
 
-    # log the import
     log = DataImportLog(
-        import_type=target_table,
-        source=filename,
-        total_records=len(rows),
-        success_records=success_count,
-        failed_records=error_count,
-        error_detail={"errors": row_errors[:50]} if row_errors else None,
-        imported_by="ui_upload",
+        import_type    = target_table,
+        source         = filename,
+        total_records  = len(rows),
+        success_records= success_count,
+        failed_records = error_count,
+        error_detail   = {"errors": row_errors[:50]} if row_errors else None,
+        imported_by    = "ui_upload",
     )
     db.add(log)
     db.commit()
 
     return {
-        "status": "complete",
-        "file": filename,
-        "target_table": target_table,
-        "total_rows": len(rows),
-        "success": success_count,
-        "errors": error_count,
-        "error_details": row_errors[:20],
+        "status":                 "complete",
+        "file":                   filename,
+        "target_table":           target_table,
+        "total_rows":             len(rows),
+        "success":                success_count,
+        "errors":                 error_count,
+        "reconciled":             reconciled_count,
+        "error_details":          row_errors[:20],
+        "affected_customer_ids":  list(affected_customer_ids),
     }
 
 
@@ -660,4 +641,4 @@ def get_import_log(
             "imported_at": l.imported_at.isoformat() if l.imported_at else None,
         }
         for l in logs
-    ]
+    ]
