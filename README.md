@@ -88,22 +88,15 @@ CreditTool ingests accounts receivable and payment data at the **invoice level**
 
 | Dashboard | Customer Detail |
 |---|---|
-| !<img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/83e634be-1b59-4b06-8841-42d3ac0630d0" />
- | !<img width="1918" height="1004" alt="image" src="https://github.com/user-attachments/assets/d8edd3c0-2d9e-4f1d-8336-e22f4a558d6c" />
- |
+| <img src="https://github.com/user-attachments/assets/83e634be-1b59-4b06-8841-42d3ac0630d0" width="480"/> | <img src="https://github.com/user-attachments/assets/d8edd3c0-2d9e-4f1d-8336-e22f4a558d6c" width="480"/> |
 
 | Scoring Config | Template Designer |
 |---|---|
-| ![Scoring Config]<img width="1917" height="1003" alt="image" src="https://github.com/user-attachments/assets/08918402-04c4-43d4-bf69-842b2ff413b2" />
- | ![Template Designer<img width="1918" height="1001" alt="image" src="https://github.com/user-attachments/assets/3452200d-331e-4f24-ad3d-c1f6802b659c" />
- |
+| <img src="https://github.com/user-attachments/assets/08918402-04c4-43d4-bf69-842b2ff413b2" width="480"/> | <img src="https://github.com/user-attachments/assets/3452200d-331e-4f24-ad3d-c1f6802b659c" width="480"/> |
 
 | Ladder Editor | AR Ledger |
 |---|---|
-| ![Ladder Editor]<img width="1913" height="994" alt="image" src="https://github.com/user-attachments/assets/4c010d4a-a7ff-41c8-9151-217f53fbfcb5" />
- | ![AR Ledger]<img width="1912" height="1001" alt="image" src="https://github.com/user-attachments/assets/c7f56fe3-3067-4ba5-b79a-4663388b02da" />
- |
-
+| <img src="https://github.com/user-attachments/assets/4c010d4a-a7ff-41c8-9151-217f53fbfcb5" width="480"/> | <img src="https://github.com/user-attachments/assets/c7f56fe3-3067-4ba5-b79a-4663388b02da" width="480"/> |
 ---
 
 ## Prerequisites
