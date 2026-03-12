@@ -34,7 +34,7 @@
 CreditTool ingests accounts receivable and payment data at the **invoice level**, builds a dynamic customer risk profile, scores it across 8 behavioral dimensions, predicts future payment behavior, and automates dunning workflows — all exposed via a REST API and visualised in a React dashboard.
 
 ## Architecture Diagram
-<img width="1024" height="706" alt="image" src="https://github.com/user-attachments/assets/a132eb85-4291-4a95-94a4-f66260a417f3" />
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/a132eb85-4291-4a95-94a4-f66260a417f3" />
 
 
 ---
