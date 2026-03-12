@@ -88,7 +88,7 @@ CreditTool ingests accounts receivable and payment data at the **invoice level**
       -- Full customer master every day (only on change)
       -- Full AR ledger dump (wasteful, slow, causes duplicate risk)
       <BR>
-- **IMPORTANT #3 ** — The inbuilt
+- **IMPORTANT #3 ** — The inbuilt AI tool is not for general purpose use. It only will work with the data in the tool even though it is a generic text generation model.
 
 ### Dashboard
 - Portfolio heat map (risk band distribution)
