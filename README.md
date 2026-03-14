@@ -1,6 +1,7 @@
 # CreditTool — Credit Risk Engine
 
 > Self-hosted, API-first credit risk and AR management platform with dynamic scoring, dunning automation, and AI-assisted analysis.
+> <br><b>Live demo <a href="http://credittool.duckdns.org/dashboard">here.</a></b>
 
 ## DASHBOARD
 <img width="1915" height="996" alt="image" src="https://github.com/user-attachments/assets/a78d028c-c887-42a2-b851-4ed59d28742c" />
